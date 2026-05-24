@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Classifier Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>News Classifier Demo</h1>
+            <p>Analyze news articles using Machine Learning models.</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <div class="settings">
+                    <label for="model-select">Select Model:</label>
+                    <select id="model-select" disabled>
+                        <option value="">Loading models...</option>
+                    </select>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="url-tab">Parse by URL</button>
+                    <button class="tab-btn" data-tab="text-tab">Input Text</button>
+                </div>
+
+                <div class="tab-content active" id="url-tab">
+                    <div class="input-group">
+                        <label for="url-input">Article URL:</label>
+                        <input type="url" id="url-input" placeholder="https://example.com/news/article">
+                    </div>
+                    <button id="predict-url-btn" class="primary-btn">Analyze URL</button>
+                </div>
+
+                <div class="tab-content" id="text-tab">
+                    <div class="input-group">
+                        <label for="title-input">Article Title:</label>
+                        <input type="text" id="title-input" placeholder="Enter the headline...">
+                    </div>
+                    <div class="input-group">
+                        <label for="body-input">Article Body:</label>
+                        <textarea id="body-input" rows="8" placeholder="Paste the full content here..."></textarea>
+                    </div>
+                    <button id="predict-text-btn" class="primary-btn">Analyze Text</button>
+                </div>
+            </div>
+
+            <div class="result-card" id="result-container" style="display: none;">
+                <h2>Analysis Result</h2>
+                <div id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing...</p>
+                </div>
+                <div id="result-content">
+                    <div class="result-header">
+                        <h3>Prediction: <span id="prediction-badge" class="badge"></span></h3>
+                        <p id="confidence-text" class="confidence-text"></p>
+                    </div>
+                    <div id="warning-msg" class="warning-msg" style="display: none;"></div>
+                    <div id="error-msg" class="error-msg" style="display: none;"></div>
+                    
+                    <div class="extracted-content" id="extracted-content">
+                        <h4>Extracted Content</h4>
+                        <div class="content-box">
+                            <strong id="extracted-title"></strong>
+                            <p id="extracted-body"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
