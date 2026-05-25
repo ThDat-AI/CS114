@@ -39,7 +39,7 @@ def predict_news_category(title: str, article: str):
         logits = outputs.logits
         
         # Lấy xác suất bằng hàm Softmax
-        probs = torch.nn.functional.softmax(logits, dim=-1)
+        probs = torch.nn.functional.softmax(logits, dim=-1)[0]
         
         # Lấy class ID có xác suất cao nhất
         conf, pred_id = torch.max(probs, dim=-1)
@@ -47,6 +47,9 @@ def predict_news_category(title: str, article: str):
         # Chuyển ID thành tên nhãn (label name)
         label_name = model.config.id2label[pred_id.item()]
         confidence = conf.item()
+        
+        # Lấy xác suất cho tất cả các nhãn
+        all_scores = {model.config.id2label[i]: float(probs[i].item()) for i in range(len(probs))}
 
-    return {"category": label_name, "confidence": confidence}
+    return {"category": label_name, "confidence": confidence, "scores": all_scores}
 

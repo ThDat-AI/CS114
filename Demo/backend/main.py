@@ -48,7 +48,8 @@ def predict(title: str, body: str, model_id: str):
             result = predict_news_category(title, body)
             return {
                 "prediction": result["category"],
-                "confidence": result.get("confidence")
+                "confidence": result.get("confidence"),
+                "scores": result.get("scores")
             }
         except Exception as e:
             return {"error": f"BERT prediction failed: {e}"}
@@ -56,10 +57,11 @@ def predict(title: str, body: str, model_id: str):
     # BiLSTM Model
     if model_id == "bilstm":
         try:
-            label, confidence = predict_bilstm(title, body)
+            label, confidence, scores = predict_bilstm(title, body)
             return {
                 "prediction": label,
-                "confidence": confidence
+                "confidence": confidence,
+                "scores": scores
             }
         except Exception as e:
             return {"error": f"BiLSTM prediction failed: {e}"}
@@ -67,10 +69,11 @@ def predict(title: str, body: str, model_id: str):
     # TextCNN Model
     if model_id == "textcnn":
         try:
-            label, confidence = predict_textcnn(title, body)
+            label, confidence, scores = predict_textcnn(title, body)
             return {
                 "prediction": label,
-                "confidence": confidence
+                "confidence": confidence,
+                "scores": scores
             }
         except Exception as e:
             return {"error": f"TextCNN prediction failed: {e}"}

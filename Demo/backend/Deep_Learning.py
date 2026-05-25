@@ -128,19 +128,21 @@ def predict_bilstm(title, article):
     input_tensor = text_to_tensor(title, article, word2idx_lstm, CONFIG["max_seq_length"])
     with torch.no_grad():
         output = model_bilstm(input_tensor)
-        prob = F.softmax(output, dim=1)
-        conf, idx = torch.max(prob, dim=1)
+        prob = F.softmax(output, dim=1)[0]
+        conf, idx = torch.max(prob, dim=0)
     
     label = le_lstm.inverse_transform([idx.item()])[0]
-    return label, conf.item()
+    all_scores = {str(le_lstm.classes_[i]): float(prob[i].item()) for i in range(len(prob))}
+    return label, conf.item(), all_scores
 
 def predict_textcnn(title, article):
     """Dự đoán bằng model TextCNN"""
     input_tensor = text_to_tensor(title, article, word2idx_cnn, CONFIG["max_seq_length"])
     with torch.no_grad():
         output = model_textcnn(input_tensor)
-        prob = F.softmax(output, dim=1)
-        conf, idx = torch.max(prob, dim=1)
+        prob = F.softmax(output, dim=1)[0]
+        conf, idx = torch.max(prob, dim=0)
     
     label = le_cnn.inverse_transform([idx.item()])[0]
-    return label, conf.item()
+    all_scores = {str(le_cnn.classes_[i]): float(prob[i].item()) for i in range(len(prob))}
+    return label, conf.item(), all_scores

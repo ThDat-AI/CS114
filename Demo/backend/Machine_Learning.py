@@ -37,6 +37,17 @@ def predict_ml(title: str, body: str, model_id: str):
     model_id = str(model_id or "").lower()
     text = (title + " . " + body).strip()
 
+    MOCK_CLASSES = [
+        'business_finance', 
+        'culture_lifestyle', 
+        'film', 
+        'food', 
+        'music', 
+        'sport', 
+        'tech_science_games', 
+        'world_environment'
+    ]
+
     if model_id not in ml_models:
         return {"error": f"ML Model '{model_id}' is not supported."}
 
@@ -52,34 +63,66 @@ def predict_ml(title: str, body: str, model_id: str):
             if hasattr(prediction, "item"):
                 prediction = prediction.item()
             
-            # 2. Xử lý lấy độ tự tin (Confidence) an toàn cho mô hình 8 lớp
+            # 2. Xử lý lấy độ tự tin (Confidence) hoặc khoảng cách (Distance)
             confidence = None
+            distance_val = None
+            all_scores = {}
             
-            if hasattr(model, "predict_proba"):
-                # Trả về mảng dạng [[p1, p2, p3, p4, p5, p6, p7, p8]]
-                probabilities = model.predict_proba(transformed_text)
-                if isinstance(probabilities, list):
-                    probabilities = probabilities[0]
+            if model_id == "svm":
+                if hasattr(model, "decision_function"):
+                    distances = model.decision_function(transformed_text)[0]
+                    distance_val = float(np.max(distances))
+                    all_scores = {str(model.classes_[i]): float(distances[i]) for i in range(len(distances))}
+                else:
+                    distance_val = 1.0  # Fallback
+                    all_scores = {}
                 
-                # Lấy dòng đầu tiên [0] và tìm xác suất lớn nhất trong 8 lớp
-                confidence = float(np.max(probabilities[0]))
+                return {
+                    "prediction": prediction,
+                    "distance": distance_val,
+                    "scores": all_scores
+                }
+            else:
+                if hasattr(model, "predict_proba"):
+                    probabilities = model.predict_proba(transformed_text)[0]
+                    confidence = float(np.max(probabilities))
+                    all_scores = {str(model.classes_[i]): float(probabilities[i]) for i in range(len(probabilities))}
+                elif hasattr(model, "decision_function"):
+                    distances = model.decision_function(transformed_text)[0]
+                    confidence = float(np.max(distances))
+                    all_scores = {str(model.classes_[i]): float(distances[i]) for i in range(len(distances))}
+                else:
+                    confidence = 1.0
+                    all_scores = {}
                 
-            elif hasattr(model, "decision_function"):
-                # Trả về mảng điểm số dạng [[s1, s2, s3, s4, s5, s6, s7, s8]]
-                distance = model.decision_function(transformed_text)
-                
-                # Lấy dòng đầu tiên [0] và tìm điểm số cao nhất trong 8 lớp
-                confidence = float(np.max(distance[0]))
-            
-            return {
-                "prediction": prediction,
-                "confidence": confidence
-            }
+                return {
+                    "prediction": prediction,
+                    "confidence": confidence,
+                    "scores": all_scores
+                }
         except Exception as e:
             return {"error": f"Prediction failed: {e}"}
     else:
-        return {
-            "prediction": "Mock Class 1" if len(text) % 2 == 0 else "Mock Class 2",
-            "warning": f"This is a mock prediction because the {model_id} model or vectorizer files were not found.",
-            "confidence": None
-        }
+        pred_idx = len(text) % len(MOCK_CLASSES)
+        prediction = MOCK_CLASSES[pred_idx]
+        
+        if model_id == "svm":
+            distances = [0.1] * len(MOCK_CLASSES)
+            distances[pred_idx] = 1.414
+            all_scores = {MOCK_CLASSES[i]: distances[i] for i in range(len(MOCK_CLASSES))}
+            return {
+                "prediction": prediction,
+                "warning": f"This is a mock prediction because the {model_id} model or vectorizer files were not found.",
+                "distance": 1.414,
+                "scores": all_scores
+            }
+        else:
+            probs = [0.05] * len(MOCK_CLASSES)
+            probs[pred_idx] = 0.65
+            all_scores = {MOCK_CLASSES[i]: probs[i] for i in range(len(MOCK_CLASSES))}
+            return {
+                "prediction": prediction,
+                "warning": f"This is a mock prediction because the {model_id} model or vectorizer files were not found.",
+                "confidence": 0.65,
+                "scores": all_scores
+            }

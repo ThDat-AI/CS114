@@ -3,19 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Classifier Demo</title>
+    <title>News Classifier Demo // Neo-Brutalist Edition</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="marquee-container">
+        <div class="marquee-text">
+            NEWS CLASSIFIER // MACHINE LEARNING DEMO // POWERED BY BERT, BILSTM, TEXTCNN, SVM, LOGISTIC REGRESSION // CLASSIFY IN REAL TIME // &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            NEWS CLASSIFIER // MACHINE LEARNING DEMO // POWERED BY BERT, BILSTM, TEXTCNN, SVM, LOGISTIC REGRESSION // CLASSIFY IN REAL TIME // &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+
     <div class="container">
         <header>
-            <h1>News Classifier Demo</h1>
-            <p>Analyze news articles using Machine Learning models.</p>
+            <div class="hero-title-container">
+                <svg class="hero-star hero-star-left" viewBox="0 0 24 24">
+                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192L12 .587z"/>
+                </svg>
+                <h1 class="hero-title-main">News Classifier</h1>
+                <svg class="hero-star hero-star-right" viewBox="0 0 24 24">
+                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192L12 .587z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="hero-subtitle">Analyze articles with machine learning models</p>
+            </div>
         </header>
 
         <main>
+            <!-- Left Side: Inputs & Setup -->
             <div class="card">
+                <div class="card-header-badge">Input Panel</div>
+                
                 <div class="settings">
                     <label for="model-select">Select Model:</label>
                     <select id="model-select" disabled>
@@ -33,7 +53,13 @@
                         <label for="url-input">Article URL:</label>
                         <input type="url" id="url-input" placeholder="https://example.com/news/article">
                     </div>
-                    <button id="predict-url-btn" class="primary-btn">Analyze URL</button>
+                    <button id="predict-url-btn" class="primary-btn">
+                        Analyze URL 
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
                 </div>
 
                 <div class="tab-content" id="text-tab">
@@ -45,30 +71,77 @@
                         <label for="body-input">Article Body:</label>
                         <textarea id="body-input" rows="8" placeholder="Paste the full content here..."></textarea>
                     </div>
-                    <button id="predict-text-btn" class="primary-btn">Analyze Text</button>
+                    <button id="predict-text-btn" class="primary-btn">
+                        Analyze Text
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
-            <div class="result-card" id="result-container" style="display: none;">
-                <h2>Analysis Result</h2>
-                <div id="loading" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Analyzing...</p>
+            <!-- Right Side: Unified Outputs, Extracted Text & History Card -->
+            <div class="result-card" id="result-container">
+                <div class="card-header-badge">Output Panel</div>
+                
+                <div class="tabs">
+                    <button class="tab-btn right-tab-btn" data-tab="active-tab">Active Scan</button>
+                    <button class="tab-btn right-tab-btn" data-tab="extracted-tab">Extracted Text</button>
+                    <button class="tab-btn right-tab-btn active" data-tab="history-tab">Past Scans</button>
                 </div>
-                <div id="result-content">
-                    <div class="result-header">
-                        <h3>Prediction: <span id="prediction-badge" class="badge"></span></h3>
-                        <p id="confidence-text" class="confidence-text"></p>
+
+                <!-- Tab 1: Active Scan -->
+                <div class="tab-content right-tab-content" id="active-tab">
+                    <div id="loading" style="display: none;">
+                        <div class="loading-box">
+                            <div class="loading-bar"></div>
+                            <p>Analyzing content...</p>
+                        </div>
                     </div>
-                    <div id="warning-msg" class="warning-msg" style="display: none;"></div>
-                    <div id="error-msg" class="error-msg" style="display: none;"></div>
                     
-                    <div class="extracted-content" id="extracted-content">
+                    <div id="result-empty" class="result-empty-state">
+                        <div class="empty-icon">📊</div>
+                        <p>No active analysis. Enter details on the left and click analyze to start!</p>
+                    </div>
+
+                    <div id="result-content" style="display: none;">
+                        <div class="result-header">
+                            <h3>Prediction: <span id="prediction-badge" class="badge"></span></h3>
+                            <p id="confidence-text" class="confidence-text"></p>
+                        </div>
+                        <div id="warning-msg" class="warning-msg" style="display: none;"></div>
+                        <div id="error-msg" class="error-msg" style="display: none;"></div>
+                        
+                        <div class="chart-section" id="chart-section" style="display: none;">
+                            <h4>Model Score Distribution</h4>
+                            <div class="histogram-chart-outer">
+                                <div class="histogram-chart-inner" id="chart-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Extracted Text -->
+                <div class="tab-content right-tab-content" id="extracted-tab">
+                    <div id="extracted-empty" class="result-empty-state">
+                        <div class="empty-icon">📄</div>
+                        <p>No content extracted yet. Parse a URL or enter text to view the parsed output.</p>
+                    </div>
+                    
+                    <div class="extracted-content" id="extracted-content" style="display: none; margin-top: 0;">
                         <h4>Extracted Content</h4>
                         <div class="content-box">
                             <strong id="extracted-title"></strong>
                             <p id="extracted-body"></p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Past Scans (History) -->
+                <div class="tab-content right-tab-content active" id="history-tab">
+                    <div class="history-list" id="history-list">
+                        <div class="history-empty">No classification history yet. Run a scan to see it here!</div>
                     </div>
                 </div>
             </div>
